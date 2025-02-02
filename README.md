@@ -85,6 +85,7 @@ Edit the Nginx configuration:
 ```sh
 vim /etc/nginx/nginx.conf
 ```
+Delete all the lines and:
 
 Add the following configuration (you may need to install your preferred text editor):
 
