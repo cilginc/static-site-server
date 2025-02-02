@@ -108,6 +108,8 @@ http {
 Restart Nginx:
 
 ```sh
+nginx
+nginx -t
 nginx -s reload
 ```
 
