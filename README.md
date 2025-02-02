@@ -138,4 +138,4 @@ This script will automate the necessary steps to deploy updates to the website.
 
 Now, everything should be set up and running smoothly!
 
-
+This project is part of [roadmap.sh](https://roadmap.sh/projects/static-site-server) DevOps projects.
