@@ -114,7 +114,7 @@ nginx -s reload
 ```
 
 Now, if you visit `localhost:8000` in your browser, you should see the website running.
-
+But it says 403 Forbidden  because we still don't uploaded html file to docker.
 ### Using rsync to Upload `index.html` to the Docker Machine
 
 ```sh
