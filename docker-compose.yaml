@@ -1,0 +1,7 @@
+services:
+  ubuntussh:
+    build:
+      dockerfile: ./dockerfile
+    container_name: ubuntussh
+    ports:
+      - "2222:22"
