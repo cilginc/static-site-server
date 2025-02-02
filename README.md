@@ -1,83 +1,94 @@
 # Static Site Server Project
 
-I don't want to give money to cloud providers so I will use my own ubuntu container in docker. To use ssh in docker we need to assign the ssh port to a different port.
+## Introduction
 
-```
+I don't want to pay cloud providers, so I'll use my own Ubuntu container in Docker. To use SSH in Docker, we need to assign the SSH port to a different port:
+
+```yaml
 port: 2222:22
 ```
 
-like this but you don't need to do this i already maked a docker-compose file for you just
+However, you don't need to do this manually—I have already created a `docker-compose.yml` file for you. Just run the following commands:
 
-```
+```sh
 git clone https://github.com/cilginc/static-site-server.git
 cd static-site-server
 docker-compose up -d
 ```
 
-and connect like this
+Then, connect to the container using:
 
-```
+```sh
 ssh root@localhost -p 2222
 ```
 
-the default password is root
-if you want to change default port or default password you can change the values in the dockerfile
-just don't forget to use
+The default password is `root`. If you want to change the default SSH port or password, you can modify the values in the Dockerfile. Just don't forget to rebuild the container with:
 
-```
+```sh
 docker-compose up -d --build
 ```
 
-when you change someting in your dockerfile
+whenever you make changes to the Dockerfile.
 
-# Set SSH keys for speed development (needed for deployment script)
-```
-ssh-keygen -t rsa -b 4096 
+---
+
+## Setting Up SSH Keys for Faster Deployment
+
+Setting up SSH keys will allow secure and faster development, especially for the deployment script.
+
+```sh
+ssh-keygen -t rsa -b 4096
 ssh-copy-id -i ~/.ssh/id_rsa.pub -p 2222 root@localhost
 ```
-# Install Dependincies
 
-We could install this dependincies when building dockerfile but since were simulating cloud providers we are installing dependincies manually
+---
 
-# Install Nginx
+## Installing Dependencies
 
-```
+We could install these dependencies when building the Dockerfile, but since we're simulating cloud providers, we will install them manually.
+
+### Install Nginx
+
+```sh
 apt-get update
-apt-get install nginx
+apt-get install nginx -y
 ```
 
-verify the installation by doing
+Verify the installation:
 
-```
+```sh
 nginx -v
 ```
 
-# Install Rsync
+### Install Rsync
 
-```
-apt-get install rsync
-```
-
-# Website
-
-I asked v0.dev for a static portfolio website now i got a portfolio website schema you can use whatever website you want.
-
-# Using rsync to send index.html to docker machine
-
-```
-rsync -a -e "ssh -p 2222" ./index.html root@localhost:/data/www/
+```sh
+apt-get install rsync -y
 ```
 
-# Configuring nginx to host website
+---
 
-```
+## Setting Up the Website
+
+I used [v0.dev](https://v0.dev) to generate a static portfolio website schema, but you can use any website you prefer.
+
+### Configuring Nginx to Host the Website
+
+Create the directory for the website files:
+
+```sh
 mkdir -p /data/www
+```
+
+Edit the Nginx configuration:
+
+```sh
 vim /etc/nginx/nginx.conf
 ```
 
-and write this (you may need to install your favorite text editor we are gonna automate that later)
+Add the following configuration (you may need to install your preferred text editor):
 
-```
+```nginx
 worker_processes 1;
 
 events {
@@ -91,17 +102,40 @@ http {
         index index.html;
     }
 }
-
-~
 ```
 
-<!--i can use tee when writing bash script-->
+Restart Nginx:
 
-and everything just works if we go to localhost:8000 we can see website is running
+```sh
+nginx -s reload
+```
 
-# Bash script time 
-'''
+Now, if you visit `localhost:8000` in your browser, you should see the website running.
+
+### Using rsync to Upload `index.html` to the Docker Machine
+
+```sh
+rsync -a -e "ssh -p 2222" ./index.html root@localhost:/data/www/
+```
+# Reload Nginx Again
+```sh
+nginx -s reload
+```
+---
+
+## Automating Deployment with a Bash Script
+
+Make the deployment script executable:
+
+```sh
 chmod +x deploy.sh
 ./deploy.sh
-'''
-you can put this deploy.sh into path if you want to use this script anywhere
+```
+
+This script will automate the necessary steps to deploy updates to the website.
+
+---
+
+Now, everything should be set up and running smoothly!
+
+
